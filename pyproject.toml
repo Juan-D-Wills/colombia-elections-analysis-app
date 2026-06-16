@@ -1,0 +1,21 @@
+[project]
+name = "elections-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi[standard-no-fastapi-cloud-cli]>=0.136.0",
+    "numpy>=2.4.6",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.3",
+]
+
+[dependency-groups]
+analysis = [
+    "ipykernel>=7.2.0",
+    "jupyter>=1.1.1",
+]
+test = [
+    "duckdb>=1.5.3",
+]
