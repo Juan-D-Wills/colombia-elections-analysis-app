@@ -6,7 +6,7 @@ src_path = Path().cwd() / "data" / "raw"
 stg_path = src_path.parent / "staged"
 
 months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'noviembre', 'Diciembre']
-month_dict = {month:str(i) for i, month in enumerate(months)}
+month_dict = {month:str(i) for i, month in enumerate(months, start=1)}
 dtypes = {
     "id_electoral":Int64Dtype(),
     "ano":str,
@@ -23,7 +23,40 @@ dtypes = {
     "nombres":str,
     "votos":Int64Dtype(),
     "curules":Int64Dtype(),
-    "defaultdict":str
+    
+}
+
+column_order = ["id_electoral", 
+    "tipo_eleccion",
+    "fecha",
+    "codigo_departamento", 
+    "departamento", 
+    "codigo_municipio", 
+    "municipio", 
+    "circunscripcion", 
+    "codigo_partido", 
+    "codigo_lista", 
+    "candidato",
+    "votos",
+    "curules",
+]
+
+column_rename_general ={
+    "coddpto":'codigo_departamento',
+    "codmpio":'codigo_municipio',
+}
+
+column_rename_p_2022 = {
+    "CORNOMBRE":"tipo_eleccion",
+    "DEP":"codigo_departamento",
+    "DEPNOMBRE":"departamento",
+    "MUN":"codigo_municipio",
+    "MUNNOMBRE":"municipio",
+    "CIR":"circunscripcion",
+    "PAR":"codigo_partido",
+    "CAN":"codigo_lista",
+    "CANNOMBRE":"nombres_apellidos",
+    "VOTOS":"votos"
 }
 
 def month_index(s:str):
