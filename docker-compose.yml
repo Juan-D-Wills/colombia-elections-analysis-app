@@ -1,0 +1,31 @@
+services:
+  orchestation_dagster:
+    container_name: orchestation_dagster
+    image: dagster/dagster:latest
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+
+
+  postgres_db:
+    container_name: postgres_db
+    image: postgres:17
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./data/staged/:/tmp/data
+      - ./docker/postgres.init/:/docker-entrypoint-initdb.d/
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "colombia_elections", "-U", "postgres", "-q"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  pgdata:
+  
