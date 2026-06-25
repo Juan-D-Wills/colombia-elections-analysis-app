@@ -1,6 +1,6 @@
-from src.pipeline.utils import src_path, dtypes, custom_dtypes, column_order, column_rename_general
+from src.pipeline.utils import src_path, dtypes, custom_dtypes, column_order, column_rename_general, current_time
 from src.pipeline.extract import from_csv
-from src.pipeline.transform import cat_string, column_manipulation
+import src.pipeline.transform as trans
 from src.pipeline.load import stage_csv
 
 
@@ -12,35 +12,38 @@ def standard_data_process():
     df_gen = from_csv(src_path, **load_config)
 
     # Join candidate names
-    t1_gen = cat_string(
-        df_gen,
-        ['nombres', 'primer_apellido'],# Safe to staged folder
-                new_col='candidato', 
+    t1_gen = trans.cat_string(
+         df_gen,
+         ['nombres', 'primer_apellido'],# Safe to staged folder
+                col_name='candidato', 
                 fillna={'nombres':' ', 'segundo_apellido':' '},
                 strip=' .', 
                 drop=['nombres', 'primer_apellido', 'segundo_apellido']
             )
 
-    # Join datetime strings
-    t2_gen = cat_string(
+   # Join datetime strings
+    t2_gen = trans.cat_string(
          t1_gen,
          ['ano', 'fecha_eleccion'],
                 replace=(' ', '-'),
-                new_col='fecha'
+                col_name='fecha_elecciones'
             )
     
     # Reorder columns for schema compatibility
-    t3_gen = column_manipulation(t2_gen, rename=column_rename_general, order=column_order)
+    t3_gen = trans.column_manipulation(t2_gen, rename=column_rename_general, order=column_order)
     
+    # Add table creation info
+    t4_gen = trans.add_columns(t3_gen, col_name='created_at', data=current_time)
+
     # Save to staged dir
     staged_config = {"index":False}
-    stage_csv(t3_gen, flush_current=False, **staged_config)
+    stage_csv(t4_gen, flush_current=True, **staged_config)
 
     print("Pipeline process compleated successfully!")
 
+
 def exceptional_data_process(p1=True, p2=False):
     def p1_2022_pv():
-
         load_config = {"skipinitialspace":True, "encoding":'unicode_escape', "engine":'python', "sep":';', "skiprows":[3422], "chunksize":30}
         path = src_path / "presidential" / "2022_presidencia_primera_vuelta.csv"
         
@@ -72,4 +75,9 @@ def exceptional_data_process(p1=True, p2=False):
 
 if "__main__" == __name__:
     standard_data_process()
+
+    # import pandas as pd
+    # l= pd.DataFrame({'hi':[1,2], 'there':[3,4]})
+    # l['baby'] = 3
+    # print(l)
     # exceptional_data_process()

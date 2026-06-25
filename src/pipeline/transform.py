@@ -5,7 +5,7 @@ def cat_string(
         df_gen:Generator[pd.DataFrame | str], 
         to_cat:list[str] | str,
         sep=' ', 
-        new_col='str_concat', 
+        col_name='str_concat', 
         replace:Tuple[str,str]=None, 
         strip:str=None, 
         fillna:str=None,
@@ -17,13 +17,13 @@ def cat_string(
         if fillna:
             df.fillna(fillna, inplace=True)
 
-        df[new_col] = df[to_cat[0]].str.cat(df[to_cat[1:]], sep=sep)
+        df[col_name] = df[to_cat[0]].str.cat(df[to_cat[1:]], sep=sep)
 
         if replace:
-            df[new_col] = df[new_col].str.replace(*replace)
+            df[col_name] = df[col_name].str.replace(*replace)
 
         if strip:
-            df[new_col] = df[new_col].str.strip(strip)
+            df[col_name] = df[col_name].str.strip(strip)
 
         if drop:
             df.drop(columns=to_cat if isinstance(drop, bool) else drop, inplace=True)
@@ -40,6 +40,17 @@ def column_manipulation(df_gen, order:List[str]=None, rename=None):
             df = df.reindex(columns=order)
 
         yield df, filename
+
+def add_columns(df_gen, col_name='new_column', data=None):
+    for df_tup in df_gen:
+        df, filename = df_tup
+        if col_name in df:
+            print("Column name already present in dataframe")
+            yield (df, filename)
+        else:
+            df[col_name] = data
+            yield (df, filename)
+
 
 if "__main__" == __name__:
     pass

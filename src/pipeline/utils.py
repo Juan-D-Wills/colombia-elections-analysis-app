@@ -26,16 +26,16 @@ dtypes = {
     
 }
 
-column_order = ["id_electoral", 
+column_order = ["id_electoral",
     "tipo_eleccion",
-    "fecha",
-    "codigo_departamento", 
-    "departamento", 
-    "codigo_municipio", 
-    "municipio", 
-    "circunscripcion", 
-    "codigo_partido", 
-    "codigo_lista", 
+    "fecha_elecciones",
+    "codigo_departamento",
+    "departamento",
+    "codigo_municipio",
+    "municipio",
+    "circunscripcion",
+    "codigo_partido",
+    "codigo_lista",
     "candidato",
     "votos",
     "curules",
@@ -69,4 +69,4 @@ custom_dtypes = {
     "fecha_eleccion": month_index
 }
 
-current_time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

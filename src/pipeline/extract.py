@@ -25,4 +25,3 @@ def from_csv(path:Path, **kwargs) -> Generator[Tuple[pd.DataFrame | str], Tuple[
 
 if "__main__" == __name__:
     pass
-    # print((Path().cwd() / "data" / "raw").is_dir())
